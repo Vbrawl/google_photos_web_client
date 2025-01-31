@@ -9,6 +9,8 @@ cookies_txt = "cookies.txt"
 payload = payloads.get_items_by_taken_date()
 with Client(cookies_txt) as client:
     response = client.send_api_request([payload])[0]
+for item in response.data['items']:
+    print(item["thumb"])
 ```
 
 ## Proper way to extract the cookies
