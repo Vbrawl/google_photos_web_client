@@ -1,7 +1,7 @@
 from .utils import get_nested
 
 
-# NOTE add =w417-h174-k-no?authuser=0 to thumbnail url to set custon size, remove 'video' watermark, remove auth requirement
+# NOTE add =w417-h174-k-no to thumbnail url to set custon size, remove 'video' watermark
 
 
 def library_item_parse(item_data):
@@ -17,7 +17,7 @@ def library_item_parse(item_data):
         "timezoneOffset": get_nested(item_data, 4),
         "creationTimestamp": get_nested(item_data, 5),
         "dedupKey": get_nested(item_data, 3),
-        "thumb": get_nested(item_data, 1, 0) + "?authuser=0",
+        "thumb": get_nested(item_data, 1, 0),
         "resWidth": get_nested(item_data, 1, 1),
         "resHeight": get_nested(item_data, 1, 2),
         "isPartialUpload": get_nested(item_data, 12, 0) == 20,
