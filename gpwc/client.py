@@ -1,32 +1,17 @@
 import http.cookiejar
 import json
-from dataclasses import dataclass
-from typing import Literal, Optional
+from typing import Literal, Iterable
 from pathlib import Path
 from http.cookiejar import MozillaCookieJar
 import urllib.parse
-import uuid
+
 
 import requests
 from lxml import html
 
 from . import utils
 from .parser import parse
-
-
-@dataclass
-class rpcidPayload:
-    rpcid: str
-    data: list[str | None]
-    payload_id: str
-    parse_response: bool
-
-
-@dataclass
-class ApiResponse:
-    rpcid: str
-    data: list | dict
-    response_id: str
+from .models import rpcidPayload, ApiResponse
 
 
 class Client:
@@ -40,6 +25,15 @@ class Client:
         self.load_cookies_in_session()
         self.global_data = self.get_global_data()
         self.logger.info(f"Account: {self.global_data['oPEP7c']}")
+        self.save_cookies_to_file()
+
+    def __enter__(self):
+        """Enter"""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Dump session cookies to file on exit"""
+        self.save_cookies_to_file()
 
     def load_cookies_in_session(self) -> None:
         """Load cookies from cookies.txt and upate session cookies with them"""
@@ -71,26 +65,11 @@ class Client:
         requests.utils.cookiejar_from_dict({c.name: c.value for c in self.session.cookies}, cookie_jar)
         cookie_jar.save(ignore_discard=True, ignore_expires=True)
 
-    def get_items_by_taken_date(
-        self,
-        timestamp: Optional[int] = None,
-        source: Optional[Literal["library", "archive", "both"]] = "both",
-        page_id: Optional[str] = None,
-        page_size: Optional[int] = 500,
-        parse_response: Optional[bool] = True,
-    ) -> rpcidPayload:
-        source_map = {"library": 1, "archive": 2, "both": 3}
-        source_id = source_map[source]
-        rpcid = "lcxiM"
-        data = [page_id, timestamp, page_size, None, 1, source_id]
-        payload_id = str(uuid.uuid4()).replace("-", "")
-        data = self.prepare_data(rpcid, data, payload_id)
-        return rpcidPayload(rpcid, data, payload_id, parse_response)
+    def prepare_payload(self, payload: rpcidPayload) -> list:
+        """Prepare payload for api request"""
+        return [payload.rpcid, json.dumps(payload.data, separators=(",", ":")), None, payload.payload_id]
 
-    def prepare_data(self, rpcid: str, data: list[str | int], payload_id: str) -> list:
-        return [rpcid, json.dumps(data, separators=(",", ":")), None, payload_id]
-
-    def send_api_request(self, payloads: list[rpcidPayload]):
+    def send_api_request(self, payloads: Iterable[rpcidPayload]):
         """Send a list of rpcid requests"""
         querystring = {
             "rpcids": ",".join([payload.rpcid for payload in payloads]),
@@ -99,7 +78,10 @@ class Client:
             "bl": self.global_data["cfb2h"],
             "rt": "c",
         }
-        payload = {"f.req": json.dumps([[payload.data for payload in payloads]], separators=(",", ":")), "at": self.global_data["SNlM0e"]}
+        payload = {
+            "f.req": json.dumps([[self.prepare_payload(payload) for payload in payloads]], separators=(",", ":")),
+            "at": self.global_data["SNlM0e"],
+        }
         payload_encoded = "&".join(f"{key}={urllib.parse.quote(value, safe='')}" for key, value in payload.items())
 
         url = f"https://photos.google.com{self.global_data['Im6cmf']}/data/batchexecute"

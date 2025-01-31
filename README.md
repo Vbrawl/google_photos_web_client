@@ -1,5 +1,16 @@
 # google_photos_web_client
 
+## Example
+
+```python
+from gpwc import Client, payloads
+
+cookies_txt = "cookies.txt"
+payload = payloads.get_items_by_taken_date()
+with Client(cookies_txt) as client:
+    response = client.send_api_request([payload])[0]
+```
+
 ## Proper way to extract the cookies
 
 1. Install [Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/Get%20cookies.txt%20LOCALLY/cclelndahbckbenkjhflpdbgdldlbecc)
