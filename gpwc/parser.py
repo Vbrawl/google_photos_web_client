@@ -1,77 +1,139 @@
-from .utils import get_nested
+from dataclasses import dataclass, field, fields
+from typing import List, Optional, Any
+from .utils import jpath
 
 
-# NOTE add =w417-h174-k-no to thumbnail url to set custon size, remove 'video' watermark
+@dataclass
+class GeoLocation:
+    coordinates: Optional[list] = None
+    name: Optional[str] = None
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(coordinates=jpath(data, "$[1][0]"), name=jpath(data, "$[1][4][0][1][0][0]"))
 
 
-def library_item_parse(item_data):
-    # Determine isOwned by checking if item_data[7] has any sub-array containing 27.
-    sub_arrays = get_nested(item_data, 7, default=[])
-    if not isinstance(sub_arrays, list):
-        sub_arrays = []
-    is_owned = all(27 not in sub for sub in sub_arrays if isinstance(sub, list))
+@dataclass
+class LibraryItem:
+    media_key: str
+    timestamp: int
+    timezone_offset: int
+    creation_timestamp: int
+    dedup_key: str
+    thumbnail_url: str
+    res_width: int
+    res_height: int
+    is_partial_upload: bool
+    is_archived: bool
+    is_favorite: bool
+    video_duration: Optional[int]
+    descriptionShort: Optional[str]
+    is_live_photo: bool
+    live_photo_duration: Optional[int]
+    is_owned: bool
+    geo_location: GeoLocation
 
-    return {
-        "mediaKey": get_nested(item_data, 0),
-        "timestamp": get_nested(item_data, 2),
-        "timezoneOffset": get_nested(item_data, 4),
-        "creationTimestamp": get_nested(item_data, 5),
-        "dedupKey": get_nested(item_data, 3),
-        "thumb": get_nested(item_data, 1, 0),
-        "resWidth": get_nested(item_data, 1, 1),
-        "resHeight": get_nested(item_data, 1, 2),
-        "isPartialUpload": get_nested(item_data, 12, 0) == 20,
-        "isArchived": get_nested(item_data, 13),
-        "isFavorite": get_nested(item_data, -1, 163238866, 0),
-        "duration": get_nested(item_data, -1, 76647426, 0),
-        "descriptionShort": get_nested(item_data, -1, 396644657, 0),
-        "isLivePhoto": get_nested(item_data, -1, 146008172) is not None,
-        "livePhotoDuration": get_nested(item_data, -1, 146008172, 1),
-        "isOwned": is_owned,
-        "geoLocation": {"coordinates": get_nested(item_data, -1, 129168200, 1, 0), "name": get_nested(item_data, -1, 129168200, 1, 4, 0, 1, 0, 0)},
-    }
+    @classmethod
+    def from_data(cls, item_data):
+        return cls(
+            media_key=jpath(item_data, "$[0]"),
+            timestamp=jpath(item_data, "$[2]"),
+            timezone_offset=jpath(item_data, "$[4]"),
+            creation_timestamp=jpath(item_data, "$[5]"),
+            dedup_key=jpath(item_data, "$[3]"),
+            thumbnail_url=jpath(item_data, "$[1][0]"),
+            res_width=jpath(item_data, "$[1][1]"),
+            res_height=jpath(item_data, "$[1][2]"),
+            is_partial_upload=jpath(item_data, "$[12][0]") == 20,
+            is_archived=jpath(item_data, "$[13]"),
+            is_favorite=jpath(item_data, "$[-1]['163238866'][0]"),
+            video_duration=jpath(item_data, "$[-1]['76647426'][0]"),
+            descriptionShort=jpath(item_data, "$[-1]['396644657'][0]"),
+            is_live_photo=jpath(item_data, "$[-1]['146008172']") is not None,
+            live_photo_duration=jpath(item_data, "$[-1]['146008172'][1]"),
+            is_owned=all(27 not in sub for sub in jpath(item_data, "$[7]")),
+            geo_location=GeoLocation.from_data(jpath(item_data, "$[-1]['129168200']") or {}),
+        )
 
 
-def library_timeline_page(data):
-    # Safely get the items from data[0].
-    items_data = get_nested(data, 0, default=[])
+@dataclass
+class LibraryTimelinePage:
+    items: List[LibraryItem]
+    nextPageId: Optional[str]
+    lastItemTimestamp: Optional[int]
 
-    return {
-        "items": [library_item_parse(item) for item in items_data],
-        "nextPageId": get_nested(data, 1),
-        "lastItemTimestamp": int(get_nested(data, 2)) if get_nested(data, 2) is not None else None,
-    }
+    @classmethod
+    def from_data(cls, data):
+        return cls(items=[LibraryItem.from_data(item) for item in jpath(data, "$[0]") or []], nextPageId=jpath(data, "$[1]"), lastItemTimestamp=int(jpath(data, "$[2]")) if jpath(data, "$[2]") is not None else None)
 
 
-def parse(rpc_id: str, data: dict) -> list | dict:
+@dataclass
+class LibraryGenericPage:
+    items: List[LibraryItem]
+    nextPageId: Optional[str]
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(items=[LibraryItem.from_data(item) for item in jpath(data, "$[0]") or []], nextPageId=jpath(data, "$[1]"))
+
+
+@dataclass
+class BaseDataClass:
+    """Base class for dataclasses that parse data using jpath."""
+
+    @classmethod
+    def get_jpath_value(cls, data: dict[Any, Any], path: str) -> Optional[Any]:
+        """Retrieve a value from a nested dictionary using a jpath expression."""
+        try:
+            return jpath(data, path)
+        except Exception as e:
+            raise ValueError(f"Error accessing path '{path}': {e}")
+
+    @classmethod
+    def from_data(cls, item_data: dict[Any, Any]):
+        """Create an instance of the dataclass by parsing data using jpath paths specified in metadata."""
+        init_args = {}
+        errors = []
+
+        for _field in fields(cls):
+            jpath_expr = _field.metadata.get("jpath")
+            if jpath_expr:
+                try:
+                    value = cls.get_jpath_value(item_data, jpath_expr)
+                    init_args[_field.name] = value
+                except ValueError as e:
+                    # Collect errors for better debugging
+                    errors.append(f"Field '{_field.name}' failed with error: {e}")
+                    init_args[_field.name] = None  # Optionally set a default value
+
+        if errors:
+            raise ValueError("Failed to parse the following fields:\n" + "\n".join(errors))
+
+        return cls(**init_args)
+
+
+@dataclass
+class RemoteMatch(BaseDataClass):
+    hash: str = field(metadata={"jpath": "$[0]"})
+    media_key: str = field(metadata={"jpath": "$[1][0]"})
+    thumbnail_url: str = field(metadata={"jpath": "$[1][1][0]"})
+    res_width: int = field(metadata={"jpath": "$[1][1][1]"})
+    res_height: int = field(metadata={"jpath": "$[1][1][2]"})
+    timestamp: int = field(metadata={"jpath": "$[1][2]"})
+    dedup_key: str = field(metadata={"jpath": "$[1][3]"})
+    timezone_offset: int = field(metadata={"jpath": "$[1][4]"})
+    creation_timestamp: int = field(metadata={"jpath": "$[1][5]"})
+    video_duration: Optional[int] = field(metadata={"jpath": "$[1][-1]['76647426'][0]"})
+    camera_info: Optional[dict] = field(metadata={"jpath": "$[1][1][8]"})
+
+
+def parse_resonse_data(rpc_id: str, data: dict):
     match rpc_id:
         case "lcxiM":
-            return library_timeline_page(data)
-        # case "nMFwOc":
-        #     return locked_folder_page(data)
-        # case "EzkLib":
-        #     return library_generic_page(data)
-        # case "F2A0H":
-        #     return links_page(data)
-        # case "Z5xsfc":
-        #     return albums_page(data)
-        # case "snAcKc":
-        #     return album_items_page(data)
-        # case "e9T5je":
-        #     return partner_shared_items_page(data)
-        # case "zy0IHe":
-        #     return trash_page(data)
-        # case "VrseUb":
-        #     return item_info_parse(data)
-        # case "fDcn4b":
-        #     return item_info_ext_parse(data)
-        # case "EWgK9e":
-        #     return bulk_media_info(data)
-        # case "dnv2s":
-        #     return download_token_check_parse(data)
-        # case "EzwWhf":
-        #     return storage_quota_parse(data)
-        # case "swbisb":
-        #     return remote_matches_parse(data)
+            return LibraryTimelinePage.from_data(data)
+        case "EzkLib":
+            return LibraryGenericPage.from_data(data)
+        case "swbisb":
+            return [RemoteMatch.from_data(item) for item in jpath(data, "$[0]") or []]
         case _:
             return {}

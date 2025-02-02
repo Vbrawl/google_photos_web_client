@@ -1,7 +1,19 @@
 import logging
+from typing import Any
+import uuid
 
+from jsonpath_ng import parse
 import requests
 from requests.adapters import HTTPAdapter, Retry
+
+
+def generate_id() -> str:
+    return uuid.uuid4().hex
+
+
+def jpath(data: list | dict, expr: str, default: Any = None) -> Any:
+    matches = parse(expr).find(data)
+    return matches[0].value if matches else default
 
 
 def get_nested(data: list | dict, *indices: tuple[int], default: bool = None):

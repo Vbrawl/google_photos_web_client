@@ -10,8 +10,9 @@ import requests
 from lxml import html
 
 from . import utils
-from .parser import parse
-from .models import rpcidPayload, ApiResponse
+from .parser import parse_resonse_data
+from .models import ApiResponse
+from .payloads import Payload
 
 
 class Client:
@@ -65,11 +66,11 @@ class Client:
         requests.utils.cookiejar_from_dict({c.name: c.value for c in self.session.cookies}, cookie_jar)
         cookie_jar.save(ignore_discard=True, ignore_expires=True)
 
-    def prepare_payload(self, payload: rpcidPayload) -> list:
+    def prepare_payload(self, payload: Payload) -> list:
         """Prepare payload for api request"""
         return [payload.rpcid, json.dumps(payload.data, separators=(",", ":")), None, payload.payload_id]
 
-    def send_api_request(self, payloads: Iterable[rpcidPayload]):
+    def send_api_request(self, payloads: Iterable[Payload]) -> list[ApiResponse]:
         """Send a list of rpcid requests"""
         querystring = {
             "rpcids": ",".join([payload.rpcid for payload in payloads]),
@@ -92,7 +93,7 @@ class Client:
 
         return self.parse_api_response(response.text, payloads)
 
-    def parse_api_response(self, response_body: str, payloads: list[rpcidPayload]):
+    def parse_api_response(self, response_body: str, payloads: list[Payload]) -> list[ApiResponse]:
         """Parse api response"""
         responses = [json.loads(line) for line in response_body.split("\n") if "wrb.fr" in line]
         parsed_responses = []
@@ -103,8 +104,9 @@ class Client:
             parse_response = next(payload.parse_response for payload in payloads if payload.payload_id == response_id)
             api_response = ApiResponse(
                 rpcid=response_rpcid,
+                success=True,
                 response_id=response_id,
-                data=parse(response_rpcid, response_data) if parse_response else response_data,
+                data=parse_resonse_data(response_rpcid, response_data) if parse_response else response_data,
             )
             parsed_responses.append(api_response)
         return parsed_responses

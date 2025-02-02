@@ -9,7 +9,7 @@ class TestClient(unittest.TestCase):
 
     def test_client(self):
         """Client test."""
-        payload = payloads.get_items_by_taken_date()
+        payload = payloads.GetItemsByTakenDate()
         client = Client(self.cookies_txt)
         response = client.send_api_request([payload])[0]
         client.save_cookies_to_file()
@@ -17,9 +17,12 @@ class TestClient(unittest.TestCase):
 
     def test_client_context(self):
         """Client context test."""
-        payload = payloads.get_items_by_taken_date()
+        taken = payloads.GetItemsByTakenDate()
+        uploaded = payloads.GetItemsByUploadedDate()
         with Client(self.cookies_txt) as client:
-            response = client.send_api_request([payload])[0]
+            response = client.send_api_request([taken, uploaded])
+        for r in response:
+            print(r.data)
         print(response)
 
 

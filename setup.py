@@ -11,6 +11,6 @@ setup(
     install_requires=[
         "requests",
         "lxml",
-        "portalocker",
+        "jsonpath-ng",
     ],
 )
