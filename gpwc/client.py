@@ -98,14 +98,18 @@ class Client:
         responses = [json.loads(line) for line in response_body.split("\n") if "wrb.fr" in line]
         parsed_responses = []
         for response in responses:
-            response_data = json.loads(response[0][2])
+            success = False
+            response_data = response[0][2]
+            if response_data:
+                response_data = json.loads(response_data)
+                success = True
             response_id = response[0][6]
             response_rpcid = response[0][1]
             parse_response = next(payload.parse_response for payload in payloads if payload.payload_id == response_id)
             self.logger.info("parsing response")
             api_response = ApiResponse(
                 rpcid=response_rpcid,
-                success=True,
+                success=success,
                 response_id=response_id,
                 data=parse_response_data(response_rpcid, response_data) if parse_response else response_data,
             )
