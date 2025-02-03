@@ -169,3 +169,13 @@ class SetArchive(Payload):
         dedup_keys_list = [[None, [1], [None, key]] for key in dedup_keys]
         self.data = [dedup_keys_list, None, 1]
 
+
+class UnArchive(Payload):
+    def __init__(
+        self,
+        dedup_keys: list[str],
+    ):
+        super().__init__()
+        self.rpcid = "w7TP3c"
+        dedup_keys_list = [[None, [2], [None, key]] for key in dedup_keys]
+        self.data = [dedup_keys_list, None, 1]
