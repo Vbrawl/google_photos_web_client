@@ -193,3 +193,14 @@ class SetItemTimestamp(Payload):
         super().__init__()
         self.rpcid = "DaSgWe"
         self.data = [[[dedup_key, timestamp, timezone_offset]]]
+
+
+class SetItemDescription(Payload):
+    def __init__(
+        self,
+        dedup_key: str,
+        description: str,
+    ):
+        super().__init__()
+        self.rpcid = "AQNOFd"
+        self.data = [None, description, dedup_key]

@@ -7,6 +7,17 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_SetItemDescription(self):
+        """Client test."""
+        payload = payloads.SetItemDescription(
+            dedup_key="Z8oFaP_a9WU09xZvLvdknZOUW0Y:19132b13941",
+            description="__test__",
+        )
+        client = Client(self.cookies_txt)
+        response = client.send_api_request([payload])[0]
+        client.save_cookies_to_file()
+        print(response)
+
     def test_SetItemTimestamp(self):
         """Client test."""
         payload = payloads.SetItemTimestamp(
