@@ -307,6 +307,33 @@ class ItemInfoExt:
         )
 
 
+@dataclass
+class ItemInfoBatch:
+    media_key: str
+    description_full: str
+    file_name: str
+    timestamp: int
+    timezone_offset: int
+    creation_timestamp: int
+    size: int
+    space_taken: int
+    is_original_quality: bool
+
+    @classmethod
+    def from_data(cls, item_data):
+        return cls(
+            media_key=safe_get(item_data, 0),
+            description_full=safe_get(item_data, 1, 2),
+            file_name=safe_get(item_data, 1, 3),
+            timestamp=safe_get(item_data, 1, 6),
+            timezone_offset=safe_get(item_data, 1, 7),
+            creation_timestamp=safe_get(item_data, 1, 8),
+            size=safe_get(item_data, 1, 9),
+            space_taken=safe_get(item_data, 1, -1, 1),
+            is_original_quality=safe_get(item_data, 1, -1, 2) == 2,
+        )
+
+
 def parse_response_data(rpc_id: str, data: dict):
     match rpc_id:
         case "lcxiM":
@@ -319,5 +346,8 @@ def parse_response_data(rpc_id: str, data: dict):
             return ItemInfo.from_data(data)
         case "fDcn4b":
             return ItemInfoExt.from_data(data)
+        case "EWgK9e":
+            return [ItemInfoBatch.from_data(item) for item in safe_get(data, 0, 1) or []]
+
         case _:
             return {}

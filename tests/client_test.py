@@ -7,6 +7,14 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_GetBatchMediaInfo(self):
+        """Client test."""
+        payload = payloads.GetBatchMediaInfo(["AF1QipN-pG0lbvzcuWrM2V4cMgorke21AVWIL-KPSj4P", "AF1QipMohHAqtyGq4IQsgYrnGvnaQG8e5E4Hzu3YBG6x"])
+        client = Client(self.cookies_txt)
+        response = client.send_api_request([payload])[0]
+        client.save_cookies_to_file()
+        print(response)
+
     def test_GetItemInfoExt(self):
         """Client test."""
         payload = payloads.GetItemInfoExt("AF1QipN-pG0lbvzcuWrM2V4cMgorke21AVWIL-KPSj4P")

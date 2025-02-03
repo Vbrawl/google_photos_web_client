@@ -92,3 +92,16 @@ class GetItemInfoExt(Payload):
         self.parse_response = parse_response
         self.rpcid = "fDcn4b"
         self.data = [media_key, 1, auth_key, None, 1]
+
+
+class GetBatchMediaInfo(Payload):
+    def __init__(
+        self,
+        media_keys: list[str],
+        parse_response: Optional[bool] = True,
+    ):
+        super().__init__()
+        self.parse_response = parse_response
+        keys = [[key] for key in media_keys]
+        self.rpcid = "EWgK9e"
+        self.data = [[[keys], [[None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, [], None, None, None, None, None, None, None, None, None, None, []]]]]
