@@ -79,3 +79,16 @@ class GetItemInfo(Payload):
         self.parse_response = parse_response
         self.rpcid = "VrseUb"
         self.data = [media_key, None, auth_key, None, album_media_key]
+
+
+class GetItemInfoExt(Payload):
+    def __init__(
+        self,
+        media_key: str,
+        auth_key: Optional[str] = None,
+        parse_response: Optional[bool] = True,
+    ):
+        super().__init__()
+        self.parse_response = parse_response
+        self.rpcid = "fDcn4b"
+        self.data = [media_key, 1, auth_key, None, 1]
