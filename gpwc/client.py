@@ -10,7 +10,7 @@ import requests
 from lxml import html
 
 from . import utils
-from .parser import parse_resonse_data
+from .parser import parse_response_data
 from .models import ApiResponse
 from .payloads import Payload
 
@@ -102,11 +102,13 @@ class Client:
             response_id = response[0][6]
             response_rpcid = response[0][1]
             parse_response = next(payload.parse_response for payload in payloads if payload.payload_id == response_id)
+            self.logger.info("parsing response")
             api_response = ApiResponse(
                 rpcid=response_rpcid,
                 success=True,
                 response_id=response_id,
-                data=parse_resonse_data(response_rpcid, response_data) if parse_response else response_data,
+                data=parse_response_data(response_rpcid, response_data) if parse_response else response_data,
             )
+            self.logger.info("done parsing response")
             parsed_responses.append(api_response)
         return parsed_responses

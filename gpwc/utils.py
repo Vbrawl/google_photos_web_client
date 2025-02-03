@@ -2,18 +2,33 @@ import logging
 from typing import Any
 import uuid
 
-from jsonpath_ng import parse
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
 
+def safe_get(data: dict | list, *keys: Any, default: Any = None) -> Any:
+    """
+    Safely retrieve a value from a nested dictionary or list using a sequence of keys/indices.
+    If any key or index is missing, return the default value.
+
+    :param data: The nested dictionary or list to search.
+    :param keys: A sequence of keys/indices to navigate through the nested structure.
+    :param default: The value to return if the path is not found (default is None).
+    :return: The value at the specified path or the default value if the path is invalid.
+    """
+    current = data
+    for key in keys:
+        if isinstance(current, dict) and key in current:
+            current = current[key]
+        elif isinstance(current, list) and isinstance(key, int) and -len(current) <= key < len(current):
+            current = current[key]
+        else:
+            return default
+    return current
+
+
 def generate_id() -> str:
     return uuid.uuid4().hex
-
-
-def jpath(data: list | dict, expr: str, default: Any = None) -> Any:
-    matches = parse(expr).find(data)
-    return matches[0].value if matches else default
 
 
 def get_nested(data: list | dict, *indices: tuple[int], default: bool = None):
