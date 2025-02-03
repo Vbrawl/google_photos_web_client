@@ -8,7 +8,7 @@ class Payload(ABC):
     rpcid: str
     data: list[str | None]
     payload_id: str
-    parse_response: bool
+    parse_response: Optional[bool] = False
 
     def __init__(self):
         self.payload_id: str = generate_id()
@@ -105,3 +105,11 @@ class GetBatchMediaInfo(Payload):
         keys = [[key] for key in media_keys]
         self.rpcid = "EWgK9e"
         self.data = [[[keys], [[None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, [], None, None, None, None, None, None, None, None, None, None, []]]]]
+class RestoreFromTrash(Payload):
+    def __init__(
+        self,
+        dedup_keys: list[str],
+    ):
+        super().__init__()
+        self.rpcid = "XwAOJf"
+        self.data = [None, 3, dedup_keys, 2]
