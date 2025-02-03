@@ -15,6 +15,14 @@ class TestClient(unittest.TestCase):
         client.save_cookies_to_file()
         print(response)
 
+    def test_GetRemoteMatchesByHash(self):
+        """Client test."""
+        payload = payloads.GetRemoteMatchesByHash(["0J7Wh1iXHA4BalGgYaK9sDyxkW4"])
+        client = Client(self.cookies_txt)
+        response = client.send_api_request([payload])[0]
+        client.save_cookies_to_file()
+        print(response)
+
     def test_GetItemInfoExt(self):
         """Client test."""
         payload = payloads.GetItemInfoExt("AF1QipN-pG0lbvzcuWrM2V4cMgorke21AVWIL-KPSj4P")
