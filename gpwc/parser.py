@@ -173,7 +173,7 @@ class ItemInfo:
             saved_to_your_photos=len(safe_get(item_data, 0, 15, "163238866", default=[])) > 0,
             is_archived=safe_get(item_data, 0, 13),
             space_taken=safe_get(item_data, 0, 15, "318563170", 0, 1),
-            is_original_quality=(None if safe_get(item_data, 0, 15, "318563170", 0, 2) is None else safe_get(item_data, 0, 15, "318563170", 0, 2) == 2),
+            is_original_quality=safe_get(item_data, 0, 15, "318563170", 0, 2) == 2,
             is_favorite=safe_get(item_data, 0, 15, "163238866", 0),
             video_duration=safe_get(item_data, 0, 15, "76647426", 0),
             is_live_photo=safe_get(item_data, 0, 15, "146008172") is not None,
@@ -248,7 +248,6 @@ class ItemInfoExt:
     camera_info: Optional[str | int]
     albums: list[Album]
     source: list[Optional[str]]
-    takes_up_space: Optional[bool]
     space_taken: Optional[int]
     is_original_quality: Optional[bool]
     saved_to_your_photos: bool
@@ -297,9 +296,8 @@ class ItemInfoExt:
             camera_info=safe_get(item_data, 0, 23),
             albums=[Album.from_data(album_data) for album_data in safe_get(item_data, 0, 19) or []],
             source=source,
-            takes_up_space=safe_get(item_data, 0, 30, 0) == 1 if safe_get(item_data, 0, 30, 0) is not None else None,
             space_taken=safe_get(item_data, 0, 30, 1),
-            is_original_quality=safe_get(item_data, 0, 30, 2) == 2 if safe_get(item_data, 0, 30, 2) is not None else None,
+            is_original_quality=safe_get(item_data, 0, 30, 2) == 2,
             saved_to_your_photos=len([sub_array for sub_array in safe_get(item_data, 0, 12, default=[]) if 20 in sub_array]) == 0,
             owner=owner,
             geo_location=GeoLocation.from_data(item_data),
