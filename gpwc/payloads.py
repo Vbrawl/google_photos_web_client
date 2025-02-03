@@ -147,3 +147,13 @@ class SetFavorite(Payload):
         dedup_keys_list = [[None, key] for key in dedup_keys]
         self.data = [dedup_keys_list, [1]]
 
+
+class UnFavorite(Payload):
+    def __init__(
+        self,
+        dedup_keys: list[str],
+    ):
+        super().__init__()
+        self.rpcid = "Ftfh0"
+        dedup_keys_list = [[None, key] for key in dedup_keys]
+        self.data = [dedup_keys_list, [2]]
