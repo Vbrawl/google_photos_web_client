@@ -7,6 +7,15 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+
+    def test_SetArchive(self):
+        """Client test."""
+        payload = payloads.SetArchive(["0J7Wh1iXHA4BalGgYaK9sDyxkW4"])
+        client = Client(self.cookies_txt)
+        response = client.send_api_request([payload])[0]
+        client.save_cookies_to_file()
+        print(response)
+
     def test_UnFavorite(self):
         """Client test."""
         payload = payloads.UnFavorite(["0J7Wh1iXHA4BalGgYaK9sDyxkW4"])
