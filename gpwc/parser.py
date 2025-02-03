@@ -341,7 +341,7 @@ def parse_response_data(rpc_id: str, data: dict):
         case "EzkLib":
             return LibraryGenericPage.from_data(data)
         case "swbisb":
-            return [RemoteMatch.from_data(item) for item in safe_get(data, [0]) or []]
+            return [RemoteMatch.from_data(item) for item in safe_get(data, 0) or []]
         case "VrseUb":
             return ItemInfo.from_data(data)
         case "fDcn4b":
