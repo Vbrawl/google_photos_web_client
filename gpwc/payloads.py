@@ -105,6 +105,18 @@ class GetBatchMediaInfo(Payload):
         keys = [[key] for key in media_keys]
         self.rpcid = "EWgK9e"
         self.data = [[[keys], [[None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, [], None, None, None, None, None, None, None, None, None, None, []]]]]
+
+
+class MoveToTrash(Payload):
+    def __init__(
+        self,
+        dedup_keys: list[str],
+    ):
+        super().__init__()
+        self.rpcid = "XwAOJf"
+        self.data = [None, 1, dedup_keys, 3]
+
+
 class RestoreFromTrash(Payload):
     def __init__(
         self,
