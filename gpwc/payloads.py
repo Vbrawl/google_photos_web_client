@@ -125,3 +125,13 @@ class RestoreFromTrash(Payload):
         super().__init__()
         self.rpcid = "XwAOJf"
         self.data = [None, 3, dedup_keys, 2]
+
+
+class CreateAlbum(Payload):
+    def __init__(
+        self,
+        name: str,
+    ):
+        super().__init__()
+        self.rpcid = "OXvT9d"
+        self.data = [name, None, 2]
