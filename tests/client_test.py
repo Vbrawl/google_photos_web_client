@@ -7,6 +7,18 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_SetItemTimestamp(self):
+        """Client test."""
+        payload = payloads.SetItemTimestamp(
+            dedup_key="Z8oFaP_a9WU09xZvLvdknZOUW0Y:19132b13941",
+            timestamp=936270900,
+            timezone_offset=19800,
+        )
+        client = Client(self.cookies_txt)
+        response = client.send_api_request([payload])[0]
+        client.save_cookies_to_file()
+        print(response)
+
     def test_UnArchive(self):
         """Client test."""
         payload = payloads.UnArchive(["0J7Wh1iXHA4BalGgYaK9sDyxkW4"])

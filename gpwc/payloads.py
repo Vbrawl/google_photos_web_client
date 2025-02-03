@@ -179,3 +179,17 @@ class UnArchive(Payload):
         self.rpcid = "w7TP3c"
         dedup_keys_list = [[None, [2], [None, key]] for key in dedup_keys]
         self.data = [dedup_keys_list, None, 1]
+
+
+class SetItemTimestamp(Payload):
+    def __init__(
+        self,
+        dedup_key: str,
+        timestamp: int,
+        timezone_offset: int,
+    ):
+        """Timestamp in epoch miliseconds
+        Timesone as an offset e.g 19800 is GMT+05:30"""
+        super().__init__()
+        self.rpcid = "DaSgWe"
+        self.data = [[[dedup_key, timestamp, timezone_offset]]]
