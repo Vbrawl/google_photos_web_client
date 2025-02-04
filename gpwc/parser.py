@@ -98,6 +98,46 @@ class LibraryGenericPage:
 
 
 @dataclass
+class TrashItem:
+    media_key: str
+    thumbnail_url: str
+    res_width: int
+    res_height: int
+    timestamp: int
+    dedup_key: str
+    timezone_offset: int
+    creation_timestamp: int
+    video_duration: Optional[int]
+
+    @classmethod
+    def from_data(cls, item_data):
+        return cls(
+            media_key=safe_get(item_data, 0),
+            thumbnail_url=safe_get(item_data, 1, 0),
+            res_width=safe_get(item_data, 1, 1),
+            res_height=safe_get(item_data, 1, 2),
+            timestamp=safe_get(item_data, 2),
+            dedup_key=safe_get(item_data, 3),
+            timezone_offset=safe_get(item_data, 4),
+            creation_timestamp=safe_get(item_data, 5),
+            video_duration=safe_get(item_data, -1, "76647426", 0),
+        )
+
+
+@dataclass
+class TrashPage:
+    items: list[LibraryItem]
+    next_page_id: Optional[str]
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            items=[TrashItem.from_data(item) for item in safe_get(data, 0) or []],
+            next_page_id=safe_get(data, [1]),
+        )
+
+
+@dataclass
 class RemoteMatch:
     hash: str
     media_key: str
@@ -344,6 +384,8 @@ def parse_response_data(rpc_id: str, data: dict):
             return ItemInfo.from_data(data)
         case "fDcn4b":
             return ItemInfoExt.from_data(data)
+        case "zy0IHe":
+            return TrashPage.from_data(data)
         case "EWgK9e":
             return [ItemInfoBatch.from_data(item) for item in safe_get(data, 0, 1) or []]
         case _:
