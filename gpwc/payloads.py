@@ -338,3 +338,14 @@ class AddItemsToExistingSharedAlbum(Payload):
         self.rpcid = "laUYf"
         item_media_keys_list = [[[key]] for key in item_media_keys]
         self.data = [album_media_key, [2, None, item_media_keys_list, None, None, None, [1]]]
+
+
+class GetStorageQuota(Payload):
+    def __init__(
+        self,
+        parse_response: Optional[bool] = True,
+    ):
+        super().__init__()
+        self.parse_response = parse_response
+        self.rpcid = "EzwWhf"
+        self.data = []

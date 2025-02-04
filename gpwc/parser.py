@@ -479,6 +479,21 @@ class ItemInfoBatch:
         )
 
 
+@dataclass
+class StorageQuota:
+    total_used: int
+    total_available: int
+    used_by_gphotos: int
+
+    @classmethod
+    def from_data(cls, item_data):
+        return cls(
+            total_used=safe_get(item_data, 6, 0),
+            total_available=safe_get(item_data, 6, 1),
+            used_by_gphotos=safe_get(item_data, 6, 3),
+        )
+
+
 def parse_response_data(rpc_id: str, data: dict):
     match rpc_id:
         case "lcxiM":
@@ -501,5 +516,7 @@ def parse_response_data(rpc_id: str, data: dict):
             return AlbumPage.from_data(data)
         case "F2A0H":
             return SharedLinksPage.from_data(data)
+        case "EzwWhf":
+            return StorageQuota.from_data(data)
         case _:
             return {}

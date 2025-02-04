@@ -7,6 +7,15 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_GetStorageQuota(self):
+        """Client test."""
+        payload = payloads.GetStorageQuota()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
+        print(response)
+
     def test_AddItemsToExistingSharedAlbum(self):
         """Client test."""
         payload = payloads.AddItemsToExistingSharedAlbum(
