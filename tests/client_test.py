@@ -7,9 +7,17 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
-    def test_GetAlbums(self):
+    def test_GetAlbumPage(self):
         """Client test."""
-        payload = payloads.GetAlbums()
+        payload = payloads.GetAlbumPage("AF1QipO2JImn8daK0DKtTXZiHBU_PZErGciuD9MSbj8P")
+        client = Client(self.cookies_txt)
+        response = client.send_api_request([payload])[0]
+        client.save_cookies_to_file()
+        print(response)
+
+    def test_GetAlbumsPage(self):
+        """Client test."""
+        payload = payloads.GetAlbumsPage()
         client = Client(self.cookies_txt)
         response = client.send_api_request([payload])[0]
         client.save_cookies_to_file()

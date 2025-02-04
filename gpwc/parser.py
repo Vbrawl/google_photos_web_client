@@ -359,6 +359,66 @@ class ItemInfoExt:
 
 
 @dataclass
+class AlbumItem:
+    media_key: str
+    thumbnail_url: str
+    res_width: int
+    res_height: int
+    timestamp: int
+    dedup_key: str
+    timezone_offset: int
+    creation_timestamp: int
+    live_photo_duration: Optional[int]
+    video_duration: Optional[int]
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            media_key=safe_get(data, 0),
+            thumbnail_url=safe_get(data, 1, 0),
+            res_width=safe_get(data, 1, 1),
+            res_height=safe_get(data, 1, 2),
+            timestamp=safe_get(data, 2),
+            dedup_key=safe_get(data, 3),
+            timezone_offset=safe_get(data, 4),
+            creation_timestamp=safe_get(data, 5),
+            live_photo_duration=safe_get(data, -1, "146008172", 1),
+            video_duration=safe_get(data, -1, "76647426", 0),
+        )
+
+
+@dataclass
+class AlbumPage:
+    items: list[AlbumItem]
+    next_page_id: str
+    media_key: str
+    thumbnail_url: str
+    title: Optional[str]
+    owner: Actor
+    item_count: int
+    last_activity_timestamp: int
+    auth_key: Optional[str]
+    members: list[Actor]
+    timestamp_range: Optional[list[Optional[int]]]
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            items=[AlbumItem.from_data(item) for item in safe_get(data, 1)],
+            next_page_id=safe_get(data, 2),
+            media_key=safe_get(data, 3, 0),
+            thumbnail_url=safe_get(data, 3, 4, 0),
+            title=safe_get(data, 3, 1),
+            owner=Actor.from_data(safe_get(data, 3, 5)),
+            timestamp_range=[safe_get(data, 3, 2, 5), safe_get(data, 3, 2, 6)],
+            item_count=safe_get(data, 3, 21),
+            last_activity_timestamp=safe_get(data, 3, 2, 9),
+            auth_key=safe_get(data, 3, 19),
+            members=[Actor.from_data(actor_data) for actor_data in safe_get(data, 3, 9)],
+        )
+
+
+@dataclass
 class ItemInfoBatch:
     media_key: str
     description_full: str
@@ -403,5 +463,7 @@ def parse_response_data(rpc_id: str, data: dict):
             return [ItemInfoBatch.from_data(item) for item in safe_get(data, 0, 1) or []]
         case "Z5xsfc":
             return AlbumsPage.from_data(data)
+        case "snAcKc":
+            return AlbumPage.from_data(data)
         case _:
             return {}

@@ -257,7 +257,7 @@ class GetTrashItems(Payload):
         self.data = [page_id]
 
 
-class GetAlbums(Payload):
+class GetAlbumsPage(Payload):
     def __init__(
         self,
         page_id: Optional[str] = None,
@@ -268,3 +268,17 @@ class GetAlbums(Payload):
         self.parse_response = parse_response
         self.rpcid = "Z5xsfc"
         self.data = [page_id, None, None, None, 1, None, None, page_size, [2], 5]
+
+
+class GetAlbumPage(Payload):
+    def __init__(
+        self,
+        media_key: str,
+        page_id: Optional[str] = None,
+        authKey: Optional[str] = None,
+        parse_response: Optional[bool] = True,
+    ):
+        super().__init__()
+        self.parse_response = parse_response
+        self.rpcid = "snAcKc"
+        self.data = [media_key, page_id, None, authKey]
