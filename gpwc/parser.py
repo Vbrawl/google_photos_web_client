@@ -284,6 +284,44 @@ class AlbumsPage:
 
 
 @dataclass
+class SharedLink:
+    thumbnail_url: str
+    item_count: int
+    creation_timestamp: int
+    media_key: str
+    auth_key: str
+    link_id: str
+    members: list[Actor]
+    owner: Actor
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            thumbnail_url=safe_get(data, 2, 0),
+            item_count=safe_get(data, 3),
+            creation_timestamp=safe_get(data, 4),
+            media_key=safe_get(data, 6),
+            auth_key=safe_get(data, 7),
+            link_id=safe_get(data, 17),
+            members=[Actor.from_data(actor_data) for actor_data in safe_get(data, 9)],
+            owner=Actor.from_data(safe_get(data, 10, 0)),
+        )
+
+
+@dataclass
+class SharedLinksPage:
+    items: list[LibraryItem]
+    next_page_id: Optional[str]
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            items=[SharedLink.from_data(item) for item in safe_get(data, 0) or []],
+            next_page_id=safe_get(data, 1),
+        )
+
+
+@dataclass
 class ItemInfoExt:
     media_key: Optional[str]
     dedup_key: Optional[str]
@@ -461,5 +499,7 @@ def parse_response_data(rpc_id: str, data: dict):
             return AlbumsPage.from_data(data)
         case "snAcKc":
             return AlbumPage.from_data(data)
+        case "F2A0H":
+            return SharedLinksPage.from_data(data)
         case _:
             return {}

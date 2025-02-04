@@ -7,6 +7,15 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_GetSharedLinksPage(self):
+        """Client test."""
+        payload = payloads.GetSharedLinksPage()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
+        print(response)
+
     def test_GetAlbumPage(self):
         """Client test."""
         payload = payloads.GetAlbumPage("AF1QipO2JImn8daK0DKtTXZiHBU_PZErGciuD9MSbj8P")

@@ -282,3 +282,15 @@ class GetAlbumPage(Payload):
         self.parse_response = parse_response
         self.rpcid = "snAcKc"
         self.data = [media_key, page_id, None, authKey]
+
+
+class GetSharedLinksPage(Payload):
+    def __init__(
+        self,
+        page_id: Optional[str] = None,
+        parse_response: Optional[bool] = True,
+    ):
+        super().__init__()
+        self.parse_response = parse_response
+        self.rpcid = "F2A0H"
+        self.data = [page_id, None, 2, None, 3]
