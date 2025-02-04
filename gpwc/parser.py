@@ -91,7 +91,7 @@ class LibraryGenericPage:
     def from_data(cls, data):
         return cls(
             items=[LibraryItem.from_data(item) for item in safe_get(data, 0) or []],
-            next_page_id=safe_get(data, [1]),
+            next_page_id=safe_get(data, 1),
         )
 
 
@@ -131,7 +131,7 @@ class TrashPage:
     def from_data(cls, data):
         return cls(
             items=[TrashItem.from_data(item) for item in safe_get(data, 0) or []],
-            next_page_id=safe_get(data, [1]),
+            next_page_id=safe_get(data, 1),
         )
 
 
@@ -279,7 +279,7 @@ class AlbumsPage:
     def from_data(cls, data):
         return cls(
             items=[Album.from_data(item) for item in safe_get(data, 0) or []],
-            next_page_id=safe_get(data, [1]),
+            next_page_id=safe_get(data, 1),
         )
 
 
