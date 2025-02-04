@@ -92,7 +92,7 @@ class LibraryGenericPage:
     @classmethod
     def from_data(cls, data):
         return cls(
-            items=[LibraryItem.from_data(item) for item in safe_get(data, [0]) or []],
+            items=[LibraryItem.from_data(item) for item in safe_get(data, 0) or []],
             next_page_id=safe_get(data, [1]),
         )
 
@@ -346,6 +346,5 @@ def parse_response_data(rpc_id: str, data: dict):
             return ItemInfoExt.from_data(data)
         case "EWgK9e":
             return [ItemInfoBatch.from_data(item) for item in safe_get(data, 0, 1) or []]
-
         case _:
             return {}
