@@ -7,6 +7,16 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_DeleteItemGeoData(self):
+        """Client test."""
+        payload = payloads.DeleteItemGeoData(
+            dedup_keys=["Z8oFaP_a9WU09xZvLvdknZOUW0Y:19132b13941"],
+        )
+        client = Client(self.cookies_txt)
+        response = client.send_api_request([payload])[0]
+        client.save_cookies_to_file()
+        print(response)
+
     def test_SetItemGeoData(self):
         """Client test."""
         payload = payloads.SetItemGeoData(
