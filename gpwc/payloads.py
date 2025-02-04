@@ -326,3 +326,15 @@ class AddItemsToExistingAlbum(Payload):
         super().__init__()
         self.rpcid = "E1Cajb"
         self.data = [item_media_keys, album_media_key]
+
+
+class AddItemsToExistingSharedAlbum(Payload):
+    def __init__(
+        self,
+        item_media_keys: list[str],
+        album_media_key: str,
+    ):
+        super().__init__()
+        self.rpcid = "laUYf"
+        item_media_keys_list = [[[key]] for key in item_media_keys]
+        self.data = [album_media_key, [2, None, item_media_keys_list, None, None, None, [1]]]

@@ -7,6 +7,18 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_AddItemsToExistingSharedAlbum(self):
+        """Client test."""
+        payload = payloads.AddItemsToExistingSharedAlbum(
+            ["AF1QipNX93h-CBi0yOcWkFIyoHngW6YxBsH9L4fl_3zR"],
+            "AF1QipOJPRPltt98zAzSiZKsSSMlRCwYrsvwIzz498j0KXz3HUpbGdpZOt_4V-iYdogRCA",
+        )
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
+        print(response)
+
     def test_AddItemsToExistingAlbum(self):
         """Client test."""
         payload = payloads.AddItemsToExistingAlbum(["AF1QipNX93h-CBi0yOcWkFIyoHngW6YxBsH9L4fl_3zR"], "AF1QipMoOvrCbXgb0tA5j4dy6Cpx6OycXUulbWpvMaBD")
