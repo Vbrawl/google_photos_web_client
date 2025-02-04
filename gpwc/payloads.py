@@ -294,3 +294,13 @@ class GetSharedLinksPage(Payload):
         self.parse_response = parse_response
         self.rpcid = "F2A0H"
         self.data = [page_id, None, 2, None, 3]
+
+
+class RemoveItemsFromAlbum(Payload):
+    def __init__(
+        self,
+        album_item_media_keys: list[str],
+    ):
+        super().__init__()
+        self.rpcid = "ycV3Nd"
+        self.data = [album_item_media_keys]
