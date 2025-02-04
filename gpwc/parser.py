@@ -275,6 +275,19 @@ class Album:
 
 
 @dataclass
+class AlbumsPage:
+    items: list[LibraryItem]
+    next_page_id: Optional[str]
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            items=[Album.from_data(item) for item in safe_get(data, 0) or []],
+            next_page_id=safe_get(data, [1]),
+        )
+
+
+@dataclass
 class ItemInfoExt:
     media_key: Optional[str]
     dedup_key: Optional[str]
@@ -388,5 +401,7 @@ def parse_response_data(rpc_id: str, data: dict):
             return TrashPage.from_data(data)
         case "EWgK9e":
             return [ItemInfoBatch.from_data(item) for item in safe_get(data, 0, 1) or []]
+        case "Z5xsfc":
+            return AlbumsPage.from_data(data)
         case _:
             return {}

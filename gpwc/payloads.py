@@ -255,3 +255,16 @@ class GetTrashItems(Payload):
         self.parse_response = parse_response
         self.rpcid = "zy0IHe"
         self.data = [page_id]
+
+
+class GetAlbums(Payload):
+    def __init__(
+        self,
+        page_id: Optional[str] = None,
+        page_size: Optional[int] = 100,
+        parse_response: Optional[bool] = True,
+    ):
+        super().__init__()
+        self.parse_response = parse_response
+        self.rpcid = "Z5xsfc"
+        self.data = [page_id, None, None, None, 1, None, None, page_size, [2], 5]
