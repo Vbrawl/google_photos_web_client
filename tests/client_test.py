@@ -7,6 +7,21 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_SetItemGeoData(self):
+        """Client test."""
+        payload = payloads.SetItemGeoData(
+            dedup_keys=["Z8oFaP_a9WU09xZvLvdknZOUW0Y:19132b13941"],
+            center_point=[407127752, -740059728],
+            visible_point_1=[404765780, -742588429],
+            visible_point_2=[409177049, -737001689],
+            scale=1,
+            gmaps_place_id="ChIJOwg_06VPwokRYv534QaPC8g",
+        )
+        client = Client(self.cookies_txt)
+        response = client.send_api_request([payload])[0]
+        client.save_cookies_to_file()
+        print(response)
+
     def test_SetItemDescription(self):
         """Client test."""
         payload = payloads.SetItemDescription(

@@ -204,3 +204,19 @@ class SetItemDescription(Payload):
         super().__init__()
         self.rpcid = "AQNOFd"
         self.data = [None, description, dedup_key]
+
+
+class SetItemGeoData(Payload):
+    def __init__(
+        self,
+        dedup_keys: list[str],
+        center_point: list[int],
+        visible_point_1: list[str],
+        visible_point_2: list[str],
+        scale: int,
+        gmaps_place_id: str,
+    ):
+        super().__init__()
+        self.rpcid = "EtUHOe"
+        dedup_key_list = [[None, key] for key in dedup_keys]
+        self.data = [dedup_key_list, [2, center_point, [visible_point_1, visible_point_2], [None, None, scale], gmaps_place_id]]
