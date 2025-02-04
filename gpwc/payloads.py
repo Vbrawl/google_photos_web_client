@@ -304,3 +304,13 @@ class RemoveItemsFromAlbum(Payload):
         super().__init__()
         self.rpcid = "ycV3Nd"
         self.data = [album_item_media_keys]
+
+class AddItemsToExistingAlbum(Payload):
+    def __init__(
+        self,
+        item_media_keys: list[str],
+        album_media_key: str,
+    ):
+        super().__init__()
+        self.rpcid = "E1Cajb"
+        self.data = [item_media_keys, album_media_key]
