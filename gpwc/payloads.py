@@ -305,6 +305,18 @@ class RemoveItemsFromAlbum(Payload):
         self.rpcid = "ycV3Nd"
         self.data = [album_item_media_keys]
 
+
+class AddItemsToNewAlbum(Payload):
+    def __init__(
+        self,
+        item_media_keys: list[str],
+        albumName: str,
+    ):
+        super().__init__()
+        self.rpcid = "E1Cajb"
+        self.data = [item_media_keys, None, albumName]
+
+
 class AddItemsToExistingAlbum(Payload):
     def __init__(
         self,

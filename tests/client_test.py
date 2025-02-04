@@ -16,6 +16,15 @@ class TestClient(unittest.TestCase):
             print(r.data)
         print(response)
 
+    def test_AddItemsToNewAlbum(self):
+        """Client test."""
+        payload = payloads.AddItemsToNewAlbum(["AF1QipNX93h-CBi0yOcWkFIyoHngW6YxBsH9L4fl_3zR"], "erereas")
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
+        print(response)
+
     def test_RemoveItemsFromAlbum(self):
         """Client test."""
         payload = payloads.RemoveItemsFromAlbum(["AF1QipN0qzQQnoKTCpU8tYmM_gN4yTzXOnrR02yHukAR"])
