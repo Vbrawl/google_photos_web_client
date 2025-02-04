@@ -231,3 +231,15 @@ class DeleteItemGeoData(Payload):
         self.rpcid = "EtUHOe"
         dedup_key_list = [[None, key] for key in dedup_keys]
         self.data = [dedup_key_list, [1]]
+
+
+class GetFavoriteItems(Payload):
+    def __init__(
+        self,
+        page_id: Optional[str] = None,
+        parse_response: Optional[bool] = True,
+    ):
+        super().__init__()
+        self.parse_response = parse_response
+        self.rpcid = "EzkLib"
+        self.data = ["Favorites", [[5, "8", 0, 9]], page_id]
