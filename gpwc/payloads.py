@@ -14,7 +14,7 @@ class Payload(ABC):
         self.payload_id: str = generate_id()
 
 
-class GetItemsByTakenDate(Payload):
+class GetLibraryPageByTakenDate(Payload):
     def __init__(
         self,
         timestamp: Optional[int] = None,
@@ -30,7 +30,7 @@ class GetItemsByTakenDate(Payload):
         self.data = [page_id, timestamp, page_size, None, 1, source_map[source]]
 
 
-class GetItemsByUploadedDate(Payload):
+class GetLibarayPageByUploadedDate(Payload):
     def __init__(
         self,
         page_id: Optional[str] = None,
@@ -42,7 +42,7 @@ class GetItemsByUploadedDate(Payload):
         self.data = ["", [[4, "ra", 0, 0]], page_id]
 
 
-class Search(Payload):
+class GetSearchPage(Payload):
     def __init__(
         self,
         query: str,
@@ -233,7 +233,7 @@ class DeleteItemGeoData(Payload):
         self.data = [dedup_key_list, [1]]
 
 
-class GetFavoriteItems(Payload):
+class GetFavoritesPage(Payload):
     def __init__(
         self,
         page_id: Optional[str] = None,
@@ -245,7 +245,7 @@ class GetFavoriteItems(Payload):
         self.data = ["Favorites", [[5, "8", 0, 9]], page_id]
 
 
-class GetTrashItems(Payload):
+class GetTrashPage(Payload):
     def __init__(
         self,
         page_id: Optional[str] = None,

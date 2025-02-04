@@ -33,7 +33,6 @@ class LibraryItem:
     is_favorite: bool
     video_duration: Optional[int]
     description_short: Optional[str]
-    is_live_photo: bool
     live_photo_duration: Optional[int]
     is_owned: bool
     geo_location: GeoLocation
@@ -62,7 +61,6 @@ class LibraryItem:
             is_favorite=safe_get(item_data, -1, "163238866", 0),
             video_duration=safe_get(item_data, -1, "76647426", 0),
             description_short=safe_get(item_data, -1, "396644657", 0),
-            is_live_photo=safe_get(item_data, -1, "146008172") is not None,
             live_photo_duration=safe_get(item_data, -1, "146008172", 1),
             is_owned=not any(27 in sub_array for sub_array in safe_get(item_data, 7, default=[])),
             geo_location=geo_location,
@@ -186,7 +184,6 @@ class ItemInfo:
     is_original_quality: bool
     is_favorite: bool
     thumbnail_url: str
-    is_live_photo: bool
     video_duration: Optional[int]
     live_photo_duration: Optional[int]
     live_photo_video_download_url: Optional[str]
@@ -216,7 +213,6 @@ class ItemInfo:
             is_original_quality=safe_get(item_data, 0, 15, "318563170", 0, 2) == 2,
             is_favorite=safe_get(item_data, 0, 15, "163238866", 0),
             video_duration=safe_get(item_data, 0, 15, "76647426", 0),
-            is_live_photo=safe_get(item_data, 0, 15, "146008172") is not None,
             live_photo_duration=safe_get(item_data, 0, 15, "146008172", 1),
             live_photo_video_download_url=safe_get(item_data, 0, 15, "146008172", 3),
             trash_timestamp=safe_get(item_data, 0, 15, "225032867", 0),

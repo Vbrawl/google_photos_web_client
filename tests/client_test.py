@@ -10,33 +10,37 @@ class TestClient(unittest.TestCase):
     def test_GetAlbumPage(self):
         """Client test."""
         payload = payloads.GetAlbumPage("AF1QipO2JImn8daK0DKtTXZiHBU_PZErGciuD9MSbj8P")
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_GetAlbumsPage(self):
         """Client test."""
         payload = payloads.GetAlbumsPage()
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_GetTrashItems(self):
         """Client test."""
-        payload = payloads.GetTrashItems()
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        payload = payloads.GetTrashPage()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_GetFavoriteItems(self):
         """Client test."""
-        payload = payloads.GetFavoriteItems()
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        payload = payloads.GetTrashPage()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_DeleteItemGeoData(self):
@@ -44,9 +48,10 @@ class TestClient(unittest.TestCase):
         payload = payloads.DeleteItemGeoData(
             dedup_keys=["Z8oFaP_a9WU09xZvLvdknZOUW0Y:19132b13941"],
         )
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_SetItemGeoData(self):
@@ -59,9 +64,10 @@ class TestClient(unittest.TestCase):
             scale=1,
             gmaps_place_id="ChIJOwg_06VPwokRYv534QaPC8g",
         )
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_SetItemDescription(self):
@@ -70,9 +76,10 @@ class TestClient(unittest.TestCase):
             dedup_key="Z8oFaP_a9WU09xZvLvdknZOUW0Y:19132b13941",
             description="__test__",
         )
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_SetItemTimestamp(self):
@@ -82,113 +89,125 @@ class TestClient(unittest.TestCase):
             timestamp=936270900,
             timezone_offset=19800,
         )
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_UnArchive(self):
         """Client test."""
         payload = payloads.UnArchive(["0J7Wh1iXHA4BalGgYaK9sDyxkW4"])
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_SetArchive(self):
         """Client test."""
         payload = payloads.SetArchive(["0J7Wh1iXHA4BalGgYaK9sDyxkW4"])
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_UnFavorite(self):
         """Client test."""
         payload = payloads.UnFavorite(["0J7Wh1iXHA4BalGgYaK9sDyxkW4"])
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_SetFavorite(self):
         """Client test."""
         payload = payloads.SetFavorite(["0J7Wh1iXHA4BalGgYaK9sDyxkW4"])
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_CreateAlbum(self):
         """Client test."""
         payload = payloads.CreateAlbum("__TEST__")
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_RestoreFromTrash(self):
         """Client test."""
         payload = payloads.RestoreFromTrash(["0J7Wh1iXHA4BalGgYaK9sDyxkW4"])
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_MoveToTrash(self):
         """Client test."""
         payload = payloads.MoveToTrash(["0J7Wh1iXHA4BalGgYaK9sDyxkW4"])
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_GetBatchMediaInfo(self):
         """Client test."""
         payload = payloads.GetBatchMediaInfo(["AF1QipN-pG0lbvzcuWrM2V4cMgorke21AVWIL-KPSj4P", "AF1QipMohHAqtyGq4IQsgYrnGvnaQG8e5E4Hzu3YBG6x"])
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_GetRemoteMatchesByHash(self):
         """Client test."""
         payload = payloads.GetRemoteMatchesByHash(["0J7Wh1iXHA4BalGgYaK9sDyxkW4"])
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_GetItemInfoExt(self):
         """Client test."""
         payload = payloads.GetItemInfoExt("AF1QipN-pG0lbvzcuWrM2V4cMgorke21AVWIL-KPSj4P")
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
         print(response)
 
     def test_GetItemInfo(self):
         """Client test."""
         payload = payloads.GetItemInfo("AF1QipN-pG0lbvzcuWrM2V4cMgorke21AVWIL-KPSj4P")
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
-        print(response)
-
-    def test_client(self):
-        """Client test."""
-        payload = payloads.GetItemsByTakenDate()
-        client = Client(self.cookies_txt)
-        response = client.send_api_request([payload])[0]
-        client.save_cookies_to_file()
-        print(response)
-
-    def test_client_context(self):
-        """Client context test."""
-        taken = payloads.GetItemsByTakenDate()
-        uploaded = payloads.GetItemsByUploadedDate()
         with Client(self.cookies_txt) as client:
-            response = client.send_api_request([taken, uploaded])
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
+        print(response)
+
+    def test_GetLibraryPageByTakenDate(self):
+        """Client test."""
+        payload = payloads.GetLibraryPageByTakenDate()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
+        print(response)
+
+    def test_GetLibarayPageByUploadedDate(self):
+        """Client context test."""
+        payload = payloads.GetLibarayPageByUploadedDate()
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
         for r in response:
             print(r.data)
         print(response)
