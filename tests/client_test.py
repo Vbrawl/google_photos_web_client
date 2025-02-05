@@ -7,6 +7,18 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_GetPartnerSharedMedia(self):
+        """Client test."""
+        payload = payloads.GetPartnerSharedMedia(
+            partner_actor_id="AF1QipOessuM__vZcZP5eOkmfQzMomlp",
+            gaia_id="114233748566422460664",
+        )
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
+        print(response)
+
     def test_SaveSharedMediaToLibrary(self):
         """Client test."""
         payload = payloads.SaveSharedMediaToLibrary(

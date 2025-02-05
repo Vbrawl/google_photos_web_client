@@ -385,3 +385,18 @@ class SaveSharedMediaToLibrary(Payload):
         super().__init__()
         self.rpcid = "V8RKJ"
         self.data = [item_media_keys, auth_key, album_media_key]
+
+
+class GetPartnerSharedMedia(Payload):
+    def __init__(
+        self,
+        partner_actor_id: str,
+        gaia_id: str,
+        page_id: Optional[str] = None,
+        parse_response: Optional[bool] = True,
+    ):
+        """Partner's actor_id, your account's gaia_id"""
+        super().__init__()
+        self.parse_response = parse_response
+        self.rpcid = "e9T5je"
+        self.data = [page_id, None, [None, [[[2, 1]]], [partner_actor_id], [None, gaia_id], 1]]

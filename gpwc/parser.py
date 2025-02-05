@@ -453,6 +453,56 @@ class AlbumPage:
 
 
 @dataclass
+class PartnerSharedItem:
+    media_key: str
+    thumbnail_url: str
+    res_width: int
+    res_height: int
+    timestamp: int
+    timezone_offset: int
+    creation_timestamp: int
+    dedup_key: str
+    is_saved: bool
+    live_photo_duration: int
+    video_duration: int
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            media_key=safe_get(data, 0),
+            thumbnail_url=safe_get(data, 1, 0),
+            res_width=safe_get(data, 1, 1),
+            res_height=safe_get(data, 1, 2),
+            timestamp=safe_get(data, 2),
+            dedup_key=safe_get(data, 3),
+            timezone_offset=safe_get(data, 4),
+            creation_timestamp=safe_get(data, 5),
+            is_saved=safe_get(data, -1, "146008172", 1),
+            live_photo_duration=safe_get(data, 0),
+            video_duration=safe_get(data, -1, "76647426", 0),
+        )
+
+
+@dataclass
+class PartnerSharedMediaPage:
+    items: list[PartnerSharedItem]
+    next_page_id: str
+    members: list[Actor]
+    parnter_actor_id: str
+    gaia_id: str
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            next_page_id=safe_get(data, 0),
+            items=[PartnerSharedItem.from_data(item) for item in safe_get(data, 1)],
+            members=[Actor.from_data(item) for item in safe_get(data, 2)],
+            parnter_actor_id=safe_get(data, 4),
+            gaia_id=safe_get(data, 5),
+        )
+
+
+@dataclass
 class ItemInfoBatch:
     media_key: str
     description_full: str
@@ -537,5 +587,7 @@ def parse_response_data(rpc_id: str, data: dict):
             return StorageQuota.from_data(data)
         case "dnv2s":
             return Download.from_data(data)
+        case "e9T5je":
+            return PartnerSharedMediaPage.from_data(data)
         case _:
             return {}
