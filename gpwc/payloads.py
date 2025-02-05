@@ -400,3 +400,14 @@ class GetPartnerSharedMedia(Payload):
         self.parse_response = parse_response
         self.rpcid = "e9T5je"
         self.data = [page_id, None, [None, [[[2, 1]]], [partner_actor_id], [None, gaia_id], 1]]
+
+
+class SavePartnerSharedMedia(Payload):
+    def __init__(
+        self,
+        item_media_keys: list[str],
+    ):
+        """Save partner shared media to library"""
+        super().__init__()
+        self.rpcid = "Es7fke"
+        self.data = [[[key] for key in item_media_keys]]

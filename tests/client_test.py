@@ -7,6 +7,15 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_SavePartnerSharedMedia(self):
+        """Client test."""
+        payload = payloads.SavePartnerSharedMedia(["AF1QipPVohB4XLMXCBmpN9nEYb7ewda6gjr-vWspJQWH"])
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
+        print(response)
+
     def test_GetPartnerSharedMedia(self):
         """Client test."""
         payload = payloads.GetPartnerSharedMedia(
