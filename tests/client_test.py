@@ -7,6 +7,24 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_CheckDownloadToken(self):
+        """Client test."""
+        payload = payloads.CheckDownloadToken("857361d8-b724-4027-893e-632c426cae1a")
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
+        print(response)
+
+    def test_GetDownloadToken(self):
+        """Client test."""
+        payload = payloads.GetDownloadToken(["AF1QipNX93h-CBi0yOcWkFIyoHngW6YxBsH9L4fl_3zR"])
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
+        print(response)
+
     def test_GetStorageQuota(self):
         """Client test."""
         payload = payloads.GetStorageQuota()

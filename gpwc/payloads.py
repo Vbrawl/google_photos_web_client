@@ -349,3 +349,27 @@ class GetStorageQuota(Payload):
         self.parse_response = parse_response
         self.rpcid = "EzwWhf"
         self.data = []
+
+
+class GetDownloadToken(Payload):
+    def __init__(
+        self,
+        item_media_keys: list[str],
+    ):
+        """Receives a token, which is then used to check if the dl url is ready with CheckDownloadToken"""
+        super().__init__()
+        self.rpcid = "yCLA7"
+        self.data = [[[key] for key in item_media_keys]]
+
+
+class CheckDownloadToken(Payload):
+    def __init__(
+        self,
+        download_token: list[str],
+        parse_response: Optional[bool] = True,
+    ):
+        """Returns a DL url if it is ready"""
+        super().__init__()
+        self.parse_response = parse_response
+        self.rpcid = "dnv2s"
+        self.data = [[download_token]]

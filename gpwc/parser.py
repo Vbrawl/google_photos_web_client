@@ -494,6 +494,23 @@ class StorageQuota:
         )
 
 
+@dataclass
+class Download:
+    file_name: str
+    download_url: int
+    download_size: int
+    unzipped_size: int
+
+    @classmethod
+    def from_data(cls, item_data):
+        return cls(
+            file_name=safe_get(item_data, 0, 0, 0, 2, 0, 0),
+            download_url=safe_get(item_data, 0, 0, 0, 2, 0, 1),
+            download_size=safe_get(item_data, 0, 0, 0, 2, 0, 2),
+            unzipped_size=safe_get(item_data, 0, 0, 0, 2, 0, 3),
+        )
+
+
 def parse_response_data(rpc_id: str, data: dict):
     match rpc_id:
         case "lcxiM":
@@ -518,5 +535,7 @@ def parse_response_data(rpc_id: str, data: dict):
             return SharedLinksPage.from_data(data)
         case "EzwWhf":
             return StorageQuota.from_data(data)
+        case "dnv2s":
+            return Download.from_data(data)
         case _:
             return {}
