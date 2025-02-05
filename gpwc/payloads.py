@@ -373,3 +373,15 @@ class CheckDownloadToken(Payload):
         self.parse_response = parse_response
         self.rpcid = "dnv2s"
         self.data = [[download_token]]
+
+
+class SaveSharedMediaToLibrary(Payload):
+    def __init__(
+        self,
+        album_media_key: list[str],
+        item_media_keys: list[str],
+        auth_key: str,
+    ):
+        super().__init__()
+        self.rpcid = "V8RKJ"
+        self.data = [item_media_keys, auth_key, album_media_key]

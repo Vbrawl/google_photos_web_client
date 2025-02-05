@@ -7,6 +7,19 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_SaveSharedMediaToLibrary(self):
+        """Client test."""
+        payload = payloads.SaveSharedMediaToLibrary(
+            item_media_keys=["AF1QipMFIpE8fcRbp0AB7URjmtHLzONOQP44UWibI04"],
+            album_media_key="AF1QipNWPWmn9NwDw8Vo8UajUQnkMfoTWFUwhNqdf4UCC5afnRCpaQSG629V47Z-kpTXyA",
+            auth_key="Tm5hb3IzY0ZtY283Nlk1cng1aktEVlNhWW4xLUdR",
+        )
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request([payload])
+        for r in response:
+            print(r.data)
+        print(response)
+
     def test_CheckDownloadToken(self):
         """Client test."""
         payload = payloads.CheckDownloadToken("857361d8-b724-4027-893e-632c426cae1a")
