@@ -7,6 +7,13 @@ class TestClient(unittest.TestCase):
     def setUp(self):
         self.cookies_txt = "cookies.txt"
 
+    def test_execute(self):
+        """Client test."""
+        payload = payloads.GetLibraryPageByTakenDate()
+        client = Client(self.cookies_txt)
+        response = payload.execute(client)
+        print(response)
+
     def test_SavePartnerSharedMedia(self):
         """Client test."""
         payload = payloads.SavePartnerSharedMedia(["AF1QipPVohB4XLMXCBmpN9nEYb7ewda6gjr-vWspJQWH"])

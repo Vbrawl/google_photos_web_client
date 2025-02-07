@@ -1,7 +1,12 @@
-from typing import Literal, Optional
+from typing import Literal, Optional, TYPE_CHECKING
 from abc import ABC
 
+
 from .utils import generate_id
+
+if TYPE_CHECKING:
+    from .client import Client
+    from .models import ApiResponse
 
 
 class Payload(ABC):
@@ -12,6 +17,10 @@ class Payload(ABC):
 
     def __init__(self):
         self.payload_id: str = generate_id()
+
+    def execute(self, client: "Client") -> "ApiResponse":
+        with client:
+            return client.send_api_request([self])[0]
 
 
 class GetLibraryPageByTakenDate(Payload):
