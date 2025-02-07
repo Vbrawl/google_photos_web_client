@@ -1,10 +1,8 @@
-import http.cookiejar
 import json
 from typing import Literal, Iterable
 from pathlib import Path
 from http.cookiejar import MozillaCookieJar
 import urllib.parse
-
 
 import requests
 from lxml import html
@@ -56,13 +54,13 @@ class Client:
 
     def load_cookies_from_file(self, path: str) -> MozillaCookieJar:
         """Load netscape cookies from file"""
-        cookie_jar = http.cookiejar.MozillaCookieJar(path)
+        cookie_jar = MozillaCookieJar(path)
         cookie_jar.load(ignore_discard=True, ignore_expires=True)
         return cookie_jar
 
     def save_cookies_to_file(self) -> None:
         """Save sesion cookies to file in netscape format"""
-        cookie_jar = http.cookiejar.MozillaCookieJar(self.cookies_txt_path)
+        cookie_jar = MozillaCookieJar(self.cookies_txt_path)
         requests.utils.cookiejar_from_dict({c.name: c.value for c in self.session.cookies}, cookie_jar)
         cookie_jar.save(ignore_discard=True, ignore_expires=True)
 
@@ -71,7 +69,7 @@ class Client:
         return [payload.rpcid, json.dumps(payload.data, separators=(",", ":")), None, payload.payload_id]
 
     def send_api_request(self, payloads: Iterable[Payload]) -> list[ApiResponse]:
-        """Send a list of rpcid requests"""
+        """Send a list of rpcid payloads"""
         querystring = {
             "rpcids": ",".join([payload.rpcid for payload in payloads]),
             "source-path": "/",
@@ -106,13 +104,11 @@ class Client:
             response_id = response[0][6]
             response_rpcid = response[0][1]
             parse_response = next(payload.parse_response for payload in payloads if payload.payload_id == response_id)
-            self.logger.info("parsing response")
             api_response = ApiResponse(
                 rpcid=response_rpcid,
                 success=success,
                 response_id=response_id,
                 data=parse_response_data(response_rpcid, response_data) if parse_response else response_data,
             )
-            self.logger.info("done parsing response")
             parsed_responses.append(api_response)
         return parsed_responses

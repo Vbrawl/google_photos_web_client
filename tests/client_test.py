@@ -303,7 +303,7 @@ class TestClient(unittest.TestCase):
 
     def test_GetItemInfo(self):
         """Client test."""
-        payload = payloads.GetItemInfo("AF1QipN-pG0lbvzcuWrM2V4cMgorke21AVWIL-KPSj4P")
+        payload = payloads.GetItemInfo("AF1QipPngr1BjPGq2U5jWvsr9HoDQTFv8HPf_QPD06s_")
         with Client(self.cookies_txt) as client:
             response = client.send_api_request([payload])
         for r in response:

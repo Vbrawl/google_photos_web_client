@@ -184,11 +184,11 @@ class ItemInfo:
     is_original_quality: bool
     is_favorite: bool
     thumbnail_url: str
+    description_full: str
     video_duration: Optional[int]
     live_photo_duration: Optional[int]
     live_photo_video_download_url: Optional[str]
     trash_timestamp: Optional[int]
-    description_full: Optional[str]
 
     @classmethod
     def from_data(cls, item_data):
@@ -245,7 +245,7 @@ class Album:
     media_key: str
     owner_actor_id: Optional[str]
     title: Optional[str]
-    thumbnail_url: Optional[str]
+    thumbnail_url: str
     item_count: int
     is_shared: bool
     creation_timestamp: int
