@@ -1,12 +1,13 @@
-from typing import Literal, Optional, TYPE_CHECKING
+from typing import Literal, Optional, TYPE_CHECKING, overload
 from abc import ABC
 
 
+from . import parser
 from .utils import generate_id
+from .models import ApiResponse
 
 if TYPE_CHECKING:
     from .client import Client
-    from .models import ApiResponse
 
 
 class Payload(ABC):
@@ -18,7 +19,7 @@ class Payload(ABC):
     def __init__(self):
         self.payload_id: str = generate_id()
 
-    def execute(self, client: "Client") -> "ApiResponse":
+    def execute(self, client: "Client") -> ApiResponse:
         with client:
             return client.send_api_request([self])[0]
 
@@ -38,6 +39,12 @@ class GetLibraryPageByTakenDate(Payload):
         self.rpcid = "lcxiM"
         self.data = [page_id, timestamp, page_size, None, 1, source_map[source]]
 
+    class ApiResponse(ApiResponse):
+        data: parser.LibraryTimelinePage
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
+
 
 class GetLibarayPageByUploadedDate(Payload):
     def __init__(
@@ -49,6 +56,12 @@ class GetLibarayPageByUploadedDate(Payload):
         self.parse_response = parse_response
         self.rpcid = "EzkLib"
         self.data = ["", [[4, "ra", 0, 0]], page_id]
+
+    class ApiResponse(ApiResponse):
+        data: parser.LibraryGenericPage
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
 
 
 class GetSearchPage(Payload):
@@ -63,6 +76,12 @@ class GetSearchPage(Payload):
         self.rpcid = "EzkLib"
         self.data = [query, None, page_id]
 
+    class ApiResponse(ApiResponse):
+        data: parser.LibraryGenericPage
+
+    @overload
+    def execute(self, client: "Client") -> tuple[parser.LibraryGenericPage, bool, str]: ...
+
 
 class GetRemoteMatchesByHash(Payload):
     def __init__(
@@ -74,6 +93,12 @@ class GetRemoteMatchesByHash(Payload):
         self.parse_response = parse_response
         self.rpcid = "swbisb"
         self.data = [hashes, None, 3, 0]
+
+    class ApiResponse(ApiResponse):
+        data: parser.RemoteMatch
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
 
 
 class GetItemInfo(Payload):
@@ -89,6 +114,12 @@ class GetItemInfo(Payload):
         self.rpcid = "VrseUb"
         self.data = [media_key, None, auth_key, None, album_media_key]
 
+    class ApiResponse(ApiResponse):
+        data: parser.ItemInfo
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
+
 
 class GetItemInfoExt(Payload):
     def __init__(
@@ -102,6 +133,12 @@ class GetItemInfoExt(Payload):
         self.rpcid = "fDcn4b"
         self.data = [media_key, 1, auth_key, None, 1]
 
+    class ApiResponse(ApiResponse):
+        data: parser.ItemInfoExt
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
+
 
 class GetBatchMediaInfo(Payload):
     def __init__(
@@ -114,6 +151,12 @@ class GetBatchMediaInfo(Payload):
         keys = [[key] for key in media_keys]
         self.rpcid = "EWgK9e"
         self.data = [[[keys], [[None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, [], None, None, None, None, None, None, None, None, None, None, []]]]]
+
+    class ApiResponse(ApiResponse):
+        data: list[parser.ItemInfoBatch]
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
 
 
 class MoveToTrash(Payload):
@@ -253,6 +296,12 @@ class GetFavoritesPage(Payload):
         self.rpcid = "EzkLib"
         self.data = ["Favorites", [[5, "8", 0, 9]], page_id]
 
+    class ApiResponse(ApiResponse):
+        data: parser.LibraryGenericPage
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
+
 
 class GetTrashPage(Payload):
     def __init__(
@@ -264,6 +313,12 @@ class GetTrashPage(Payload):
         self.parse_response = parse_response
         self.rpcid = "zy0IHe"
         self.data = [page_id]
+
+    class ApiResponse(ApiResponse):
+        data: parser.TrashPage
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
 
 
 class GetAlbumsPage(Payload):
@@ -277,6 +332,12 @@ class GetAlbumsPage(Payload):
         self.parse_response = parse_response
         self.rpcid = "Z5xsfc"
         self.data = [page_id, None, None, None, 1, None, None, page_size, [2], 5]
+
+    class ApiResponse(ApiResponse):
+        data: parser.AlbumsPage
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
 
 
 class GetAlbumPage(Payload):
@@ -292,6 +353,12 @@ class GetAlbumPage(Payload):
         self.rpcid = "snAcKc"
         self.data = [media_key, page_id, None, authKey]
 
+    class ApiResponse(ApiResponse):
+        data: parser.AlbumPage
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
+
 
 class GetSharedLinksPage(Payload):
     def __init__(
@@ -303,6 +370,12 @@ class GetSharedLinksPage(Payload):
         self.parse_response = parse_response
         self.rpcid = "F2A0H"
         self.data = [page_id, None, 2, None, 3]
+
+    class ApiResponse(ApiResponse):
+        data: parser.SharedLinksPage
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
 
 
 class RemoveItemsFromAlbum(Payload):
@@ -359,6 +432,12 @@ class GetStorageQuota(Payload):
         self.rpcid = "EzwWhf"
         self.data = []
 
+    class ApiResponse(ApiResponse):
+        data: parser.StorageQuota
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
+
 
 class GetDownloadToken(Payload):
     def __init__(
@@ -382,6 +461,12 @@ class CheckDownloadToken(Payload):
         self.parse_response = parse_response
         self.rpcid = "dnv2s"
         self.data = [[download_token]]
+
+    class ApiResponse(ApiResponse):
+        data: parser.Download
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
 
 
 class SaveSharedMediaToLibrary(Payload):
@@ -409,6 +494,12 @@ class GetPartnerSharedMedia(Payload):
         self.parse_response = parse_response
         self.rpcid = "e9T5je"
         self.data = [page_id, None, [None, [[[2, 1]]], [partner_actor_id], [None, gaia_id], 1]]
+
+    class ApiResponse(ApiResponse):
+        data: parser.PartnerSharedMediaPage
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
 
 
 class SavePartnerSharedMedia(Payload):
