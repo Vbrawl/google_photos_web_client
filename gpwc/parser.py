@@ -40,12 +40,10 @@ class LibraryItem:
     @classmethod
     def from_data(cls, item_data):
         # Parse geo_location if present
-        geo_location = None
-        if safe_get(item_data, -1, "129168200", 1) is not None:
-            geo_location = GeoLocation(
-                coordinates=safe_get(item_data, -1, "129168200", 1, 0),
-                name=safe_get(item_data, -1, "129168200", 1, 4, 0, 1, 0, 0),
-            )
+        geo_location = GeoLocation(
+            coordinates=safe_get(item_data, -1, "129168200", 1, 0),
+            name=safe_get(item_data, -1, "129168200", 1, 4, 0, 1, 0, 0),
+        )
 
         return cls(
             media_key=safe_get(item_data, 0),
@@ -124,7 +122,7 @@ class TrashItem:
 
 @dataclass
 class TrashPage:
-    items: list[LibraryItem]
+    items: list[TrashItem]
     next_page_id: Optional[str]
 
     @classmethod
@@ -272,7 +270,7 @@ class Album:
 
 @dataclass
 class AlbumsPage:
-    items: list[LibraryItem]
+    items: list[Album]
     next_page_id: Optional[str]
 
     @classmethod
@@ -310,7 +308,7 @@ class SharedLink:
 
 @dataclass
 class SharedLinksPage:
-    items: list[LibraryItem]
+    items: list[SharedLink]
     next_page_id: Optional[str]
 
     @classmethod
