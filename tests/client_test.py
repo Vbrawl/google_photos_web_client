@@ -13,14 +13,15 @@ class TestClient(unittest.TestCase):
         client = Client(self.cookies_txt)
         response = payload.execute(client)
         print(response)
+        for item in response.data.items:
+            print(item.media_key)
 
     def test_SavePartnerSharedMedia(self):
         """Client test."""
         payload = payloads.SavePartnerSharedMedia(["AF1QipPVohB4XLMXCBmpN9nEYb7ewda6gjr-vWspJQWH"])
         with Client(self.cookies_txt) as client:
-            response = client.send_api_request([payload])
-        for r in response:
-            print(r.data)
+            response = client.send_api_request(payload)
+            print(response.data)
         print(response)
 
     def test_GetPartnerSharedMedia(self):
@@ -314,10 +315,8 @@ class TestClient(unittest.TestCase):
         """Client test."""
         payload = payloads.GetLibraryPageByTakenDate()
         with Client(self.cookies_txt) as client:
-            response = client.send_api_request([payload])
-        for r in response:
-            print(r.data)
-        print(response)
+            response = client.send_api_request(payload)
+            print(response.data)
 
     def test_GetLibarayPageByUploadedDate(self):
         """Client context test."""

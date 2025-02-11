@@ -1,5 +1,5 @@
 import json
-from typing import Literal, Iterable
+from typing import Literal, Iterable, overload
 from pathlib import Path
 from http.cookiejar import MozillaCookieJar
 import urllib.parse
@@ -52,7 +52,7 @@ class Client:
         script_json = script_text.replace("window.WIZ_global_data = ", "").replace(";", "")
         return json.loads(script_json)
 
-    def load_cookies_from_file(self, path: str) -> MozillaCookieJar:
+    def load_cookies_from_file(self, path: str | Path) -> MozillaCookieJar:
         """Load netscape cookies from file"""
         cookie_jar = MozillaCookieJar(path)
         cookie_jar.load(ignore_discard=True, ignore_expires=True)
@@ -68,17 +68,29 @@ class Client:
         """Prepare payload for api request"""
         return [payload.rpcid, json.dumps(payload.data, separators=(",", ":")), None, payload.payload_id]
 
-    def send_api_request(self, payloads: Iterable[Payload]) -> list[ApiResponse]:
-        """Send a list of rpcid payloads"""
+    @overload
+    def send_api_request(self, payloads: Payload) -> ApiResponse: ...
+
+    @overload
+    def send_api_request(self, payloads: Iterable[Payload]) -> list[ApiResponse]: ...
+
+    def send_api_request(self, payloads: Iterable[Payload] | Payload) -> list[ApiResponse] | ApiResponse:
+        """Send an api request wiht rpc payloads"""
+
+        if isinstance(payloads, Payload):
+            _payloads = [payloads]
+        else:
+            _payloads = payloads
+
         querystring = {
-            "rpcids": ",".join([payload.rpcid for payload in payloads]),
+            "rpcids": ",".join([payload.rpcid for payload in _payloads]),
             "source-path": "/",
             "f.sid": self.global_data["FdrFJe"],
             "bl": self.global_data["cfb2h"],
             "rt": "c",
         }
         payload = {
-            "f.req": json.dumps([[self.prepare_payload(payload) for payload in payloads]], separators=(",", ":")),
+            "f.req": json.dumps([[self.prepare_payload(payload) for payload in _payloads]], separators=(",", ":")),
             "at": self.global_data["SNlM0e"],
         }
         payload_encoded = "&".join(f"{key}={urllib.parse.quote(value, safe='')}" for key, value in payload.items())
@@ -89,9 +101,12 @@ class Client:
 
         response.raise_for_status()
 
-        return self.parse_api_response(response.text, payloads)
+        pared_responses = self.parse_api_response(response.text, _payloads)
+        if isinstance(payloads, Payload):
+            return pared_responses[0]
+        return pared_responses
 
-    def parse_api_response(self, response_body: str, payloads: list[Payload]) -> list[ApiResponse]:
+    def parse_api_response(self, response_body: str, payloads: Iterable[Payload]) -> list[ApiResponse]:
         """Parse api response"""
         responses = [json.loads(line) for line in response_body.split("\n") if "wrb.fr" in line]
         parsed_responses = []
