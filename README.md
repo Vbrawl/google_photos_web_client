@@ -4,13 +4,21 @@
 
 ```python
 from gpwc import Client, payloads
-
 cookies_txt = "cookies.txt"
-payload = payloads.GetLibraryPageByTakenDate()
-with Client(cookies_txt) as client:
-    response = client.send_api_request([payload])[0]
+lib_page_taken = payloads.GetLibraryPageByTakenDate()
+storage_quota = payloads.GetStorageQuota()
+
+# single payload
+client = Client(cookies_txt)
+response = lib_page_taken.execute(client)
 for item in response.data.items:
-    print(item.thumbnail_url)
+    print(item.media_key)
+
+# or multiple paylods at once
+with Client(cookies_txt) as client:
+    response = client.send_api_request([lib_page_taken, storage_quota])
+for item in response:
+    print(item)
 ```
 
 ## Proper way to extract the cookies
