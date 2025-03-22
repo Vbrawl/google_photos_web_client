@@ -14,7 +14,7 @@ response = lib_page_taken.execute(client)
 for item in response.data.items:
     print(item.media_key)
 
-# or multiple paylods at once
+# or multiple payloads at once
 with Client(cookies_txt) as client:
     response = client.send_api_request([lib_page_taken, storage_quota])
 for item in response:

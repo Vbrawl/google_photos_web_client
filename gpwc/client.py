@@ -47,8 +47,7 @@ class Client:
     def parse_main_page(self, page_body: str) -> dict:
         """Parse data from photos.google.com html body"""
         xml_page = html.fromstring(page_body)
-        script_node = xml_page.xpath('//script[@data-id="_gd"]')[0]
-        script_text: str = script_node.text
+        script_text: str = xml_page.xpath('//script[@data-id="_gd"]/text()')[0]
         script_json = script_text.replace("window.WIZ_global_data = ", "").replace(";", "")
         return json.loads(script_json)
 
