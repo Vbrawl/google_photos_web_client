@@ -1,6 +1,7 @@
 import unittest
 
 from gpwc import Client, payloads
+from gpwc.models import DriveMedia
 
 
 class TestClient(unittest.TestCase):
@@ -9,12 +10,23 @@ class TestClient(unittest.TestCase):
 
     def test_execute(self):
         """Client test."""
-        payload = payloads.GetLibraryPageByTakenDate()
+        drive_items = [
+            DriveMedia(media_key="1HOyHxyVOZECsBRm9clwkIyuE4dor58kU", mime_type="image/png"),
+            DriveMedia(media_key="1HRO1PDbghooNmeqR9J7f1ddEcrgcz5jf", mime_type="image/png"),
+        ]
+        payload = payloads.ImportMediaFromDrive(drive_items)
         client = Client(self.cookies_txt)
         response = payload.execute(client)
+        for item in response.data:
+            print(item)
+
+    def test_SavePartnerSharedMedia(self):
+        """Client test."""
+        payload = payloads.SavePartnerSharedMedia(["AF1QipPVohB4XLMXCBmpN9nEYb7ewda6gjr-vWspJQWH"])
+        with Client(self.cookies_txt) as client:
+            response = client.send_api_request(payload)
+            print(response.data)
         print(response)
-        for item in response.data.items:
-            print(item.media_key)
 
     def test_SavePartnerSharedMedia(self):
         """Client test."""

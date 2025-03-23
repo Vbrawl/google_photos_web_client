@@ -501,6 +501,22 @@ class PartnerSharedMediaPage:
 
 
 @dataclass
+class ImportedDriveMedia:
+    drive_key: str
+    media_key: str
+    dedup_key: str
+    # TODO: parse more data field
+
+    @classmethod
+    def from_data(cls, data):
+        return cls(
+            drive_key=safe_get(data, 0),
+            media_key=safe_get(data, 1, 0),
+            dedup_key=safe_get(data, 1, 3),
+        )
+
+
+@dataclass
 class ItemInfoBatch:
     media_key: str
     description_full: str
@@ -587,5 +603,7 @@ def parse_response_data(rpc_id: str, data: dict):
             return Download.from_data(data)
         case "e9T5je":
             return PartnerSharedMediaPage.from_data(data)
+        case "SusGud":
+            return [ImportedDriveMedia.from_data(item) for item in safe_get(data, 0) or []]
         case _:
             return {}

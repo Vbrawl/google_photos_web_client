@@ -4,7 +4,7 @@ from abc import ABC
 
 from . import parser
 from .utils import generate_id
-from .models import ApiResponse
+from .models import ApiResponse, DriveMedia
 
 if TYPE_CHECKING:
     from .client import Client
@@ -511,3 +511,22 @@ class SavePartnerSharedMedia(Payload):
         super().__init__()
         self.rpcid = "Es7fke"
         self.data = [[[key] for key in item_media_keys]]
+
+
+class ImportMediaFromDrive(Payload):
+    def __init__(
+        self,
+        drive_media: list[DriveMedia],
+        parse_response: bool = True,
+    ):
+        """Import media from Google Drive to Google Photos library"""
+        super().__init__()
+        self.parse_response = parse_response
+        self.rpcid = "SusGud"
+        self.data = [[[item.media_key, item.mime_type] for item in drive_media]]
+
+    class ApiResponse(ApiResponse):
+        data: list[parser.ImportedDriveMedia]
+
+    def execute(self, client: "Client") -> ApiResponse:
+        return super().execute(client)
