@@ -31,3 +31,9 @@ for item in response:
 6. Close the Google Photos tab
 7. Export all cookies from the browser with "Export All Cookies" button in `Get cookies.txt LOCALLY`
 8. Close the private browsing/incognito window so the session is never opened in the browser again
+
+### My Other Google Photos Projects
+
+* Python client with unlimited uploads: [https://github.com/xob0t/gphotos_mobile_client](https://github.com/xob0t/gphotos_mobile_client)
+* Disguise any file as media for GP to accept and store it: [https://github.com/xob0t/gp-file-hide](https://github.com/xob0t/gp-file-hide)
+* Manage library with bulk operations: [https://github.com/xob0t/Google-Photos-Toolkit](https://github.com/xob0t/Google-Photos-Toolkit)
