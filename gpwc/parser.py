@@ -435,8 +435,13 @@ class AlbumPage:
 
     @classmethod
     def from_data(cls, data):
+        album_item_data = safe_get(data, 1)
+        if album_item_data:
+            album_items = list(map(lambda x: AlbumItem.from_data(x), album_item_data))
+        else:
+            album_items = []
         return cls(
-            items=[AlbumItem.from_data(item) for item in safe_get(data, 1)],
+            items=album_items,
             next_page_id=safe_get(data, 2),
             media_key=safe_get(data, 3, 0),
             thumbnail_url=safe_get(data, 3, 4, 0),
